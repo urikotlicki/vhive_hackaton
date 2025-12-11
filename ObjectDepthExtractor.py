@@ -17,12 +17,18 @@ class ObjectDepthExtractor:
         Args:
             segmentation_mask: Binary mask (H, W) with 0/1 values. 
                                1 indicates object pixels, 0 indicates background.
+                               Extra dimensions are automatically squeezed.
             depth_mask: Depth map (H, W) from ZoeDepth model.
                         Values represent metric depth in meters.
+                        Extra dimensions are automatically squeezed.
         
         Raises:
             ValueError: If masks have different shapes or invalid values.
         """
+        # Squeeze extra dimensions (e.g., (1, H, W) -> (H, W))
+        segmentation_mask = np.squeeze(segmentation_mask)
+        depth_mask = np.squeeze(depth_mask)
+        
         self._validate_inputs(segmentation_mask, depth_mask)
         
         self.segmentation_mask = segmentation_mask.astype(np.uint8)
